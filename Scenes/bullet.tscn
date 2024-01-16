@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://g7pumv8p73ly"]
+
+[ext_resource type="Script" path="res://scripts/bullet.gd" id="1_rjjb6"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7lx35"]
+radius = 0.025
+height = 0.1
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p3h8t"]
+radius = 0.05
+height = 0.15
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rqo6o"]
+radius = 0.05
+height = 0.15
+
+[node name="bullet" type="RigidBody3D"]
+transform = Transform3D(-0.00213408, -0.00416065, 0.999989, -0.000120815, 0.999991, 0.0041604, -0.999998, -0.000111913, -0.00213457, 0, 0, 0)
+gravity_scale = 0.0
+script = ExtResource("1_rjjb6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_7lx35")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+collision_layer = 255
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(-2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_p3h8t")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_rqo6o")
+
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]

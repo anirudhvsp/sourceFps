@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bboode0k85ark"]
+
+[ext_resource type="Shader" path="res://scripts/EmissiveMaterial.gdshader" id="1_8k1rt"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_8k1rt")
