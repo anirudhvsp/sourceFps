@@ -1,7 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://wjka3qnx3jcx"]
+[gd_scene load_steps=13 format=3 uid="uid://wjka3qnx3jcx"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_cyqgd"]
 [ext_resource type="Texture2D" uid="uid://diak0d2wdcysx" path="res://Assets/gun_sprites.png" id="2_p3aon"]
+[ext_resource type="Script" path="res://scripts/AnimatedSprite2D.gd" id="3_1aqq3"]
+[ext_resource type="Texture2D" uid="uid://bqkj74nhbwe3h" path="res://Assets/transparent-crosshair-png-11.png" id="4_214jk"]
+[ext_resource type="Script" path="res://scripts/crosshair.gd" id="5_aa032"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wvnth"]
 radius = 0.35
@@ -77,10 +80,15 @@ omni_range = 8.49061
 [node name="GunAnchor" type="Node3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, -0.08, -0.177)
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="Node2D" type="Node2D" parent="Head/GunAnchor"]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Node2D"]
-position = Vector2(1034, 543)
-scale = Vector2(0.464844, 0.464844)
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Head/GunAnchor/Node2D"]
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_5x8gi")
-animation = &"shoot"
+script = ExtResource("3_1aqq3")
+
+[node name="Transparent-crosshair-png-11" type="Sprite2D" parent="Head/GunAnchor/Node2D"]
+position = Vector2(526, 276)
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("4_214jk")
+script = ExtResource("5_aa032")

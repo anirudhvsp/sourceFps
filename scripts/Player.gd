@@ -8,7 +8,8 @@ const GRAVITY = 20
 const STOP_SPEED = 1.5
 const JUMP_IMPULSE = sqrt(2 * GRAVITY * 0.85)
 const PLAYER_WALKING_MULTIPLIER = 0.666
-@onready var animated_sprite_2d = $Node2D/AnimatedSprite2D
+@onready var animated_sprite_2d = $Head/GunAnchor/Node2D/AnimatedSprite2D
+
 @onready var omni_light_3d = $Head/OmniLight3D
 var bullet_scene = preload("res://Scenes/bullet.tscn")  # Update the path to your bullet scene
 var hitMarker = preload("res://Scenes/hit_marker.tscn")
