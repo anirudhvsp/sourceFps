@@ -93,7 +93,15 @@ func process_input():
 		direction -= transform.basis.x
 	elif Input.is_action_pressed("right"):
 		direction += transform.basis.x
-		
+	var inputDir = Input.get_vector("left","right","forward","backward")
+	
+	if(inputDir.x>0 and is_on_floor):
+		head.rotation.z = lerp_angle(head.rotation.z, deg_to_rad(-5), 0.05)
+	elif(inputDir.x<0 and is_on_floor):
+		head.rotation.z = lerp_angle(head.rotation.z, deg_to_rad(5), 0.05)
+	else:
+		head.rotation.z = lerp_angle(head.rotation.z, deg_to_rad(0), 0.05)
+				
 	# Jumping
 	wish_jump = Input.is_action_just_pressed("jump")
 	

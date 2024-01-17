@@ -1,4 +1,10 @@
-[gd_scene format=3 uid="uid://cqy1syl46apmj"]
+[gd_scene load_steps=2 format=3 uid="uid://cqy1syl46apmj"]
 
-[node name="hitMarker" type="Node3D"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_b3n8b"]
+radius = 0.2
+
+[node name="hitMarker" type="CharacterBody3D"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_b3n8b")
