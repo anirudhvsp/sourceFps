@@ -1,10 +1,78 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqy1syl46apmj"]
+[gd_scene load_steps=12 format=3 uid="uid://cqy1syl46apmj"]
+
+[ext_resource type="Script" path="res://scripts/hit_marker.gd" id="1_1o6go"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_b3n8b"]
 radius = 0.2
 
+[sub_resource type="Curve" id="Curve_djmej"]
+_data = [Vector2(0, 0.572954), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_fnm3w"]
+max_value = 5.0
+_data = [Vector2(0, 10), 0.0, 0.0, 0, 0, Vector2(1e-05, 5), 0.0, 0.0, 0, 0, Vector2(1, 2.36655), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_pfl3a"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_1u1wu"]
+curve_x = SubResource("Curve_djmej")
+curve_y = SubResource("Curve_fnm3w")
+curve_z = SubResource("Curve_pfl3a")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qqg2p"]
+particle_flag_align_y = true
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_max = 10.0
+angular_velocity_max = 10.0
+scale_min = 0.1
+scale_max = 0.5
+scale_curve = SubResource("CurveXYZTexture_1u1wu")
+color = Color(5, 2, 1, 1)
+hue_variation_max = 0.1
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 1.0
+
+[sub_resource type="Gradient" id="Gradient_wosip"]
+interpolation_mode = 2
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_if2kq"]
+gradient = SubResource("Gradient_wosip")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.6, 0.4)
+metadata/_snap_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_osep0"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+diffuse_mode = 3
+specular_mode = 1
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_if2kq")
+
+[sub_resource type="QuadMesh" id="QuadMesh_5xwn1"]
+material = SubResource("StandardMaterial3D_osep0")
+
 [node name="hitMarker" type="CharacterBody3D"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+script = ExtResource("1_1o6go")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_b3n8b")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 20
+lifetime = 0.2
+one_shot = true
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_qqg2p")
+draw_pass_1 = SubResource("QuadMesh_5xwn1")

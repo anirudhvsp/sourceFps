@@ -9,7 +9,6 @@ func _ready():
 
 	
 func _on_hit(body_part):
-	print(health)
 	match body_part:
 		"Head":
 			take_damage(100)

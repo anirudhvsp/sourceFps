@@ -271,3 +271,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.207, 0, -11.0779)
 
 [node name="bullets" type="Node3D" parent="."]
 script = ExtResource("6_n7j7x")
+
+[connection signal="child_entered_tree" from="bullets" to="bullets" method="_on_child_entered_tree"]

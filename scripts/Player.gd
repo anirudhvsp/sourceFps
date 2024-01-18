@@ -18,8 +18,8 @@ var hitMarker = preload("res://Scenes/hit_marker.tscn")
 @onready var gun_anchor = $Head/GunAnchor
 var emissive_material : ShaderMaterial = preload("res://scripts/new_shader_material.tres")
 var tpMarker = preload("res://Scenes/tp_marker.tscn")
-
-
+var warpCam = preload("res://Scenes/warp_camera.tscn")
+var warpCamInstance = null
 var emissive_ray_duration = 1.0
 var boost_force = 20.0  # Adjust the force of the boost
 var boost_duration = 0.01  # Adjust the duration of the boost
@@ -118,9 +118,6 @@ func process_input():
 	
 	if Input.is_action_just_pressed("mouse_right") and boostCooldown == 0:
 		var x = ray_cast_3d.get_collision_point()
-		var hitMarkerInstance = hitMarker.instantiate()
-		hitMarkerInstance.set_position(x)
-		get_tree().root.add_child(hitMarkerInstance)
 		var y = gun_anchor.get_global_position()
 		apply_boost(x,y)
 	
@@ -141,10 +138,12 @@ func process_input():
 		bullet_instance.set_position(1.05*head.global_position )
 		bullet_instance.setShoot()
 		get_tree().root.add_child(bullet_instance)'''
+		var time_in_seconds = 1/20
+		await get_tree().create_timer(time_in_seconds).timeout
 		var x = ray_cast_3d.get_collision_point()
-		var hitMarkerInstance = hitMarker.instantiate()
+		'''var hitMarkerInstance = hitMarker.instantiate()
 		hitMarkerInstance.set_position(x)
-		get_tree().root.add_child(hitMarkerInstance)
+		get_tree().root.add_child(hitMarkerInstance)'''
 		var y = gun_anchor.get_global_position()
 		create_emissive_ray(x,y)
 		
@@ -160,7 +159,14 @@ func process_input():
 		if normal != Vector3.ZERO:
 			var spawn_position = ray_cast_3d.get_collision_point() + normal * distance_along_normal
 			tpMarkerInstance.global_position = spawn_position
-			
+		if(warpCamInstance == null):
+			warpCamInstance = warpCam.instantiate()
+			tpMarkerInstance.add_child(warpCamInstance)
+		warpCamInstance.global_rotation = head.global_rotation
+		
+
+		
+		
 	if(Input.is_action_just_released("ability1")):
 		tpMarketDraw = false
 		global_position = tpMarkerInstance.global_position
@@ -169,7 +175,7 @@ func process_input():
 		tpMarkerInstance.queue_free()
 		tpMarkerInstance = null
 		sloMo = false
-		
+		warpCamInstance.queue_free()
 func process_movement(delta):
 	# Get the normalized input direction so that we don't move faster on diagonals
 	var wish_dir = direction.normalized()
@@ -230,29 +236,40 @@ func create_emissive_ray(start_point, end_point):
 
 	# Create a new MeshInstance3D for the ray
 	var mesh_instance = MeshInstance3D.new()
-	var ray_mesh = CylinderMesh.new()  # You can adjust the mesh type as needed
-	ray_mesh.bottom_radius = 0.01
-	ray_mesh.top_radius = 0.01
-	mesh_instance.material_override = emissive_material  # Apply the emissive material
-
+	var ray_mesh = SphereMesh.new()  # You can adjust the mesh type as needed
+	ray_mesh.radius = 0.01
+	ray_mesh.height = 1.5
+	
 	mesh_instance.mesh = ray_mesh
 	# Set the position and scale of the ray
-	mesh_instance.transform.origin = (start_point + end_point) / 2
 	mesh_instance.transform.basis.y = (end_point - start_point).normalized()
 	mesh_instance.transform.basis.x = Vector3(0, 1, 0).cross(mesh_instance.transform.basis.y).normalized()
 	mesh_instance.transform.basis.z = mesh_instance.transform.basis.x.cross(mesh_instance.transform.basis.y).normalized()
+	
+	# Set a fixed height for the cylinder
+	var fixed_cylinder_height = 0.25
+	mesh_instance.scale.y = fixed_cylinder_height / 2
+	mesh_instance.scale.x = 0.2  # Adjust the thickness of the ray
+	mesh_instance.scale.z = 0.2  # Adjust the thickness of the ray
 
-	mesh_instance.scale.y = start_point.distance_to(end_point) / 2
-	mesh_instance.scale.x = 0.1  # Adjust the thickness of the ray
-	mesh_instance.scale.z = 0.1  # Adjust the thickness of the ray
+	# Create a ShaderMaterial with emissive color (bright orange)
+	var emissive_material = ShaderMaterial.new()
+	emissive_material.set_shader_parameter("emission", Color(1.0, 0.5, 0.0))  # Adjust the RGB values for the desired color
+
+	# Set the material of the MeshInstance3D
+	mesh_instance.material_override = emissive_material
 
 	# Add the MeshInstance3D to the Node3D
 	emissive_ray.add_child(mesh_instance)
-
+	emissive_ray.set_meta("start", start_point)
+	emissive_ray.set_meta("end", end_point)
 	# Add the emissive ray to the "bullets" group
 	get_parent().get_node("bullets").add_child(emissive_ray)
+	emissive_ray.global_position = end_point
 	# Reset the emissive ray duration
 	emissive_ray_duration = 1.0
+
+
 
 
 	
