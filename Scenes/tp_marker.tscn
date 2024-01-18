@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://7p0d4cgokwoh"]
+
+[ext_resource type="Shader" path="res://shaders/tp_marker.gdshader" id="2_m30py"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_irnl7"]
+render_priority = 0
+shader = ExtResource("2_m30py")
+shader_parameter/_shield_color = Color(0, 0, 1, 1)
+shader_parameter/_shield_color_brightness = 10.0
+shader_parameter/_shield_intensity = 2.0
+shader_parameter/_rotation = Vector3(0.1, 0, 0)
+shader_parameter/_shield_size = 0.0
+shader_parameter/_shield_pulse_frequency = 1.0
+shader_parameter/_shield_pulse_density = 1.0
+shader_parameter/_shield_pulse_amplitude = 1.0
+shader_parameter/_shield_pulse_blend = 1.0
+shader_parameter/_shield_pulse_radius = 1.0
+shader_parameter/_impact_origin = Vector3(1, 0, 0)
+shader_parameter/_impact_frequency = 5.0
+shader_parameter/_impact_density = 5.0
+shader_parameter/_impact_amplitude = 6.0
+shader_parameter/_impact_blend = 0.0
+shader_parameter/_impact_radius = 1.1
+shader_parameter/_impact_anim = 0.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_fs8gd"]
+
+[node name="tpMarker" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_irnl7")
+mesh = SubResource("SphereMesh_fs8gd")

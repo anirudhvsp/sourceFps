@@ -17,14 +17,16 @@ var hitMarker = preload("res://Scenes/hit_marker.tscn")
 @onready var head = $Head
 @onready var gun_anchor = $Head/GunAnchor
 var emissive_material : ShaderMaterial = preload("res://scripts/new_shader_material.tres")
+var tpMarker = preload("res://Scenes/tp_marker.tscn")
+
 
 var emissive_ray_duration = 1.0
 var boost_force = 20.0  # Adjust the force of the boost
 var boost_duration = 0.01  # Adjust the duration of the boost
 var boostCooldownDuration = 0.2  # Adjust the cooldown duration for the boost
 var boostCooldown = 0.0
-
-
+var tpMarketDraw = false
+var tpMarkerInstance = null
 
 var direction = Vector3()
 var friction = 5
@@ -33,7 +35,7 @@ var walking = false
 var flash_duration = 0.15  # Adjust the duration of the flash as needed
 var flash_timer = 0.0
 var initial_light_energy = 15.0  # Initial energy value for the flash
-
+var stopMove = false
 # Camera
 var sensitivity = 0.05
 
@@ -81,9 +83,11 @@ func _physics_process(delta):
 		if boostCooldown <= 0.0:
 			boostCooldown = 0.0
 	
+		
 func process_input():
 	direction = Vector3()
-	
+	if Input.is_action_just_pressed("reset"):
+		get_parent().get_tree().reload_current_scene() 
 	# Movement directions
 	if Input.is_action_pressed("forward"):
 		direction -= transform.basis.z
@@ -141,6 +145,24 @@ func process_input():
 		create_emissive_ray(x,y)
 		
 		
+	if(Input.is_action_pressed("ability1")):
+		tpMarketDraw = true
+		if tpMarketDraw and tpMarkerInstance == null:
+			tpMarkerInstance = tpMarker.instantiate()
+			get_tree().root.add_child(tpMarkerInstance)
+		var normal = ray_cast_3d.get_collision_normal()
+		var distance_along_normal = 1
+		if normal != Vector3.ZERO:
+			var spawn_position = ray_cast_3d.get_collision_point() + normal * distance_along_normal
+			tpMarkerInstance.global_position = spawn_position
+			
+	if(Input.is_action_just_released("ability1")):
+		tpMarketDraw = false
+		global_position = tpMarkerInstance.global_position
+		direction = Vector3(0,0,0)
+		set_velocity(Vector3(0,0,0))
+		tpMarkerInstance.queue_free()
+		tpMarkerInstance = null
 		
 func process_movement(delta):
 	# Get the normalized input direction so that we don't move faster on diagonals
@@ -197,30 +219,39 @@ func update_velocity_air(wish_dir: Vector3, delta):
 
 
 func create_emissive_ray(start_point, end_point):
-	# Create a new MeshInstance for the ray
-	var emissive_ray = MeshInstance3D.new()
+	# Create a new Node3D to hold both the MeshInstance3D and metadata
+	var emissive_ray = Node3D.new()
+
+	# Create a new MeshInstance3D for the ray
+	var mesh_instance = MeshInstance3D.new()
 	var ray_mesh = CylinderMesh.new()  # You can adjust the mesh type as needed
 	ray_mesh.bottom_radius = 0.01
 	ray_mesh.top_radius = 0.01
-	emissive_ray.material_override = emissive_material  # Apply the emissive material
-	
-	emissive_ray.mesh = ray_mesh
+	mesh_instance.material_override = emissive_material  # Apply the emissive material
+
+	mesh_instance.mesh = ray_mesh
 	# Set the position and scale of the ray
-	emissive_ray.transform.origin = (start_point + end_point) / 2
-	emissive_ray.transform.basis.y = (end_point - start_point).normalized()
-	emissive_ray.transform.basis.x = Vector3(0, 1, 0).cross(emissive_ray.transform.basis.y).normalized()
-	emissive_ray.transform.basis.z = emissive_ray.transform.basis.x.cross(emissive_ray.transform.basis.y).normalized()
+	mesh_instance.transform.origin = (start_point + end_point) / 2
+	mesh_instance.transform.basis.y = (end_point - start_point).normalized()
+	mesh_instance.transform.basis.x = Vector3(0, 1, 0).cross(mesh_instance.transform.basis.y).normalized()
+	mesh_instance.transform.basis.z = mesh_instance.transform.basis.x.cross(mesh_instance.transform.basis.y).normalized()
 
-	emissive_ray.scale.y = start_point.distance_to(end_point) / 2
-	emissive_ray.scale.x = 0.1  # Adjust the thickness of the ray
-	emissive_ray.scale.z = 0.1  # Adjust the thickness of the ray
-	
-	# Add the emissive ray to the scene
-	get_tree().root.add_child(emissive_ray)
+	mesh_instance.scale.y = start_point.distance_to(end_point) / 2
+	mesh_instance.scale.x = 0.1  # Adjust the thickness of the ray
+	mesh_instance.scale.z = 0.1  # Adjust the thickness of the ray
 
+	# Add the MeshInstance3D to the Node3D
+	emissive_ray.add_child(mesh_instance)
+
+	# Add the emissive ray to the "bullets" group
+	get_parent().get_node("bullets").add_child(emissive_ray)
 	# Reset the emissive ray duration
 	emissive_ray_duration = 1.0
 
+
+	
+	
+	
 
 func apply_boost(x,y):
 	# Get the direction vector between points X and Y
