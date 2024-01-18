@@ -27,7 +27,7 @@ var boostCooldownDuration = 0.2  # Adjust the cooldown duration for the boost
 var boostCooldown = 0.0
 var tpMarketDraw = false
 var tpMarkerInstance = null
-
+var sloMo = false
 var direction = Vector3()
 var friction = 5
 var wish_jump
@@ -38,7 +38,7 @@ var initial_light_energy = 15.0  # Initial energy value for the flash
 var stopMove = false
 # Camera
 var sensitivity = 0.05
-
+var currentTimeScale = 1.0
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -82,6 +82,10 @@ func _physics_process(delta):
 		boostCooldown -= delta
 		if boostCooldown <= 0.0:
 			boostCooldown = 0.0
+	if sloMo : 
+		Engine.time_scale = 0.1
+	else :
+		Engine.time_scale = 1.0
 	
 		
 func process_input():
@@ -152,6 +156,7 @@ func process_input():
 			get_tree().root.add_child(tpMarkerInstance)
 		var normal = ray_cast_3d.get_collision_normal()
 		var distance_along_normal = 1
+		sloMo = true
 		if normal != Vector3.ZERO:
 			var spawn_position = ray_cast_3d.get_collision_point() + normal * distance_along_normal
 			tpMarkerInstance.global_position = spawn_position
@@ -163,6 +168,7 @@ func process_input():
 		set_velocity(Vector3(0,0,0))
 		tpMarkerInstance.queue_free()
 		tpMarkerInstance = null
+		sloMo = false
 		
 func process_movement(delta):
 	# Get the normalized input direction so that we don't move faster on diagonals
