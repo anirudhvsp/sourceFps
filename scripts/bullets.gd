@@ -17,6 +17,7 @@ func _process(delta):
 			nodes.erase(i)
 			var hitMarkerInstance = hitMarker.instantiate()
 			hitMarkerInstance.set_position(i.get_meta("start"))
+			hitMarkerInstance.set_meta("direction", start-end)
 			get_tree().root.add_child(hitMarkerInstance)
 			
 		
