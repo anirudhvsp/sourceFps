@@ -9,11 +9,12 @@ const STOP_SPEED = 1.5
 const JUMP_IMPULSE = sqrt(2 * GRAVITY * 0.85)
 const PLAYER_WALKING_MULTIPLIER = 0.666
 @onready var animated_sprite_2d = $Head/GunAnchor/Node2D/AnimatedSprite2D
+@onready var ray_cast_3d = $Head/RayCast3D
+@onready var camera_3d = $SubViewportContainer/SubViewport/Camera3D
 
 @onready var omni_light_3d = $Head/OmniLight3D
 var bullet_scene = preload("res://Scenes/bullet.tscn")  # Update the path to your bullet scene
 var hitMarker = preload("res://Scenes/hit_marker.tscn")
-@onready var ray_cast_3d = $Head/RayCast3D
 @onready var head = $Head
 @onready var gun_anchor = $Head/GunAnchor
 var emissive_material : ShaderMaterial = preload("res://scripts/new_shader_material.tres")
@@ -163,6 +164,9 @@ func process_input():
 			warpCamInstance = warpCam.instantiate()
 			tpMarkerInstance.add_child(warpCamInstance)
 		warpCamInstance.global_rotation = head.global_rotation
+		#warpCamInstance.get_child(0).set_current(true)
+		camera_3d.global_position = warpCamInstance.global_position
+		camera_3d.global_rotation = warpCamInstance.global_rotation
 		
 
 		

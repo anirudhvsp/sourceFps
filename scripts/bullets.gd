@@ -11,7 +11,7 @@ func _process(delta):
 		var start = i.get_meta("start")
 		var end = i.get_meta("end")
 		if(i.global_position!= start):
-			i.global_position = i.global_position.move_toward(start,0.5)
+			i.global_position = i.global_position.move_toward(start,0.25)
 		else:
 			i.queue_free()
 			nodes.erase(i)

@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://wjka3qnx3jcx"]
+[gd_scene load_steps=14 format=3 uid="uid://wjka3qnx3jcx"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_cyqgd"]
 [ext_resource type="Texture2D" uid="uid://diak0d2wdcysx" path="res://Assets/gun_sprites.png" id="2_p3aon"]
 [ext_resource type="Script" path="res://scripts/AnimatedSprite2D.gd" id="3_1aqq3"]
 [ext_resource type="Texture2D" uid="uid://bv0oswwa6fu7q" path="res://Assets/crosshair.png" id="4_nogtv"]
 [ext_resource type="Script" path="res://scripts/Sprite2D.gd" id="4_ywbrj"]
+[ext_resource type="Script" path="res://scripts/SubViewport.gd" id="6_aqpba"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wvnth"]
 radius = 0.35
@@ -55,7 +56,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"shoot",
-"speed": 20.0
+"speed": 40.0
 }]
 
 [node name="Player" type="CharacterBody3D"]
@@ -86,6 +87,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, -0.08, -0.177)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Head/GunAnchor/Node2D"]
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_5x8gi")
+animation = &"shoot"
 script = ExtResource("3_1aqq3")
 
 [node name="crosshair" type="Sprite2D" parent="Head/GunAnchor/Node2D"]
@@ -93,4 +95,11 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_nogtv")
 script = ExtResource("4_ywbrj")
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+script = ExtResource("6_aqpba")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]

@@ -1,0 +1,110 @@
+[gd_scene load_steps=15 format=3 uid="uid://wjka3qnx3jcx"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_cyqgd"]
+[ext_resource type="Texture2D" uid="uid://diak0d2wdcysx" path="res://Assets/gun_sprites.png" id="2_p3aon"]
+[ext_resource type="Script" path="res://scripts/AnimatedSprite2D.gd" id="3_1aqq3"]
+[ext_resource type="Texture2D" uid="uid://bv0oswwa6fu7q" path="res://Assets/crosshair.png" id="4_nogtv"]
+[ext_resource type="Script" path="res://scripts/Sprite2D.gd" id="4_ywbrj"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wvnth"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o1ayy"]
+atlas = ExtResource("2_p3aon")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_awwwx"]
+atlas = ExtResource("2_p3aon")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g6upo"]
+atlas = ExtResource("2_p3aon")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lxyja"]
+atlas = ExtResource("2_p3aon")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbgds"]
+atlas = ExtResource("2_p3aon")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5x8gi"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o1ayy")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_awwwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g6upo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lxyja")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hbgds")
+}],
+"loop": false,
+"name": &"shoot",
+"speed": 40.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a10ny"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_dow12"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_cyqgd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_wvnth")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="RayCast3D" type="RayCast3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, -1.99124e-06, -1, 0, 45.5542, -4.37114e-08, 0, 0, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Head"]
+light_energy = 0.0
+shadow_enabled = true
+omni_range = 13.0
+
+[node name="GunAnchor" type="Node3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, -0.08, -0.177)
+
+[node name="Node2D" type="Node2D" parent="Head/GunAnchor"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Head/GunAnchor/Node2D"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_5x8gi")
+animation = &"shoot"
+script = ExtResource("3_1aqq3")
+
+[node name="crosshair" type="Sprite2D" parent="Head/GunAnchor/Node2D"]
+visible = false
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_nogtv")
+script = ExtResource("4_ywbrj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+visible = false
+material_override = SubResource("ShaderMaterial_a10ny")
+mesh = SubResource("QuadMesh_dow12")
+
+[node name="SubViewport" type="SubViewport" parent="."]
