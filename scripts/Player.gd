@@ -11,6 +11,7 @@ const PLAYER_WALKING_MULTIPLIER = 0.666
 @onready var animated_sprite_2d = $Head/GunAnchor/Node2D/AnimatedSprite2D
 @onready var ray_cast_3d = $Head/RayCast3D
 @onready var camera_3d = $SubViewportContainer/SubViewport/Camera3D
+@onready var sub_viewport_container = $SubViewportContainer
 
 @onready var omni_light_3d = $Head/OmniLight3D
 var bullet_scene = preload("res://Scenes/bullet.tscn")  # Update the path to your bullet scene
@@ -167,7 +168,7 @@ func process_input():
 		#warpCamInstance.get_child(0).set_current(true)
 		camera_3d.global_position = warpCamInstance.global_position
 		camera_3d.global_rotation = warpCamInstance.global_rotation
-		
+		sub_viewport_container.visible = true
 
 		
 		
@@ -180,6 +181,8 @@ func process_input():
 		tpMarkerInstance = null
 		sloMo = false
 		warpCamInstance.queue_free()
+		sub_viewport_container.visible = false
+		
 func process_movement(delta):
 	# Get the normalized input direction so that we don't move faster on diagonals
 	var wish_dir = direction.normalized()

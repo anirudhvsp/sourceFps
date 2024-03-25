@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://scripts/AnimatedSprite2D.gd" id="3_1aqq3"]
 [ext_resource type="Texture2D" uid="uid://bv0oswwa6fu7q" path="res://Assets/crosshair.png" id="4_nogtv"]
 [ext_resource type="Script" path="res://scripts/Sprite2D.gd" id="4_ywbrj"]
-[ext_resource type="Script" path="res://scripts/SubViewport.gd" id="6_aqpba"]
+[ext_resource type="Script" path="res://Scenes/SubViewportContainer.gd" id="6_hayhc"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wvnth"]
 radius = 0.35
@@ -96,10 +96,14 @@ texture = ExtResource("4_nogtv")
 script = ExtResource("4_ywbrj")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 335.0
+offset_top = 67.0
+offset_right = 847.0
+offset_bottom = 579.0
+script = ExtResource("6_hayhc")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-script = ExtResource("6_aqpba")
+handle_input_locally = false
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
