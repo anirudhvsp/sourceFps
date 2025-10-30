@@ -34,6 +34,7 @@ jobs:
 
       - name: Add COI Service Worker
         run: |
+          apt-get update && apt-get install -y curl
           curl -O https://coi-serviceworker.pages.dev/coi-serviceworker.js
           mv coi-serviceworker.js builds/web/coi-serviceworker.js
           sed -i '/<head>/a <script src="coi-serviceworker.js"></script>' builds/web/build2.html
