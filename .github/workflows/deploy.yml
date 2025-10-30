@@ -36,7 +36,10 @@ jobs:
         run: |
           wget https://coi-serviceworker.pages.dev/coi-serviceworker.js -O builds/web/coi-serviceworker.js
           awk '/<head>/{print; print "    <script src=\"coi-serviceworker.js\"></script>"; print "    <script>if (typeof window !== \x27undefined\x27 && \x27serviceWorker\x27 in navigator) { navigator.serviceWorker.register(\x27coi-serviceworker.js\x27); }</script>"; next}1' builds/web/build2.html > builds/web/tmp.html
+          awk '/<head>/{print; print "    <script src=\"coi-serviceworker.js\"></script>"; print "    <script>if (typeof window !== \x27undefined\x27 && \x27serviceWorker\x27 in navigator) { navigator.serviceWorker.register(\x27coi-serviceworker.js\x27); }</script>"; next}1' builds/web/index.html > builds/web/indextmp.html
           mv builds/web/tmp.html builds/web/build2.html
+          mv builds/web/indextmp.html builds/web/index.html
+          
 
 
 
